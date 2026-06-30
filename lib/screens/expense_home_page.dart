@@ -13,6 +13,10 @@ class _ExpenseHomePageState extends State<ExpenseHomePage> {
   final DatabaseServices _databaseServices = DatabaseServices();
   List<Expense> _expences = [];
 
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _categoryController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -26,15 +30,74 @@ class _ExpenseHomePageState extends State<ExpenseHomePage> {
     });
   }
 
-  Future<void> _addSampleExpense() async {
+  void _showAddExpenseDialog() {
+    _titleController.clear();
+    _amountController.clear();
+    _categoryController.clear();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('New expense'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _titleController,
+                decoration: const InputDecoration(labelText: 'Title'),
+              ),
+              TextField(
+                controller: _amountController,
+                decoration: const InputDecoration(labelText: 'Amount'),
+                keyboardType: TextInputType.number,
+              ),
+              TextField(
+                controller: _categoryController,
+                decoration: const InputDecoration(labelText: 'Category'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: _saveExpense,
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _saveExpense() async {
+    final title = _titleController.text.trim();
+    final amountText = _amountController.text.trim();
+    final category = _categoryController.text.trim();
+
+    // validation: title and category should be filled
+    if (title.isEmpty || category.isEmpty) return;
+
+    // check quantity
+    final amount = double.tryParse(amountText);
+    if (amount == null || amount <= 0) return;
+
     final expense = Expense(
-      title: 'Coffee',
-      amount: 4.50,
-      category: 'Food',
+      title: title,
+      amount: amount,
+      category: category,
       date: DateTime.now(),
     );
 
     await _databaseServices.insertExpense(expense);
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
+
     _loadExpenses();
   }
 
@@ -70,7 +133,7 @@ class _ExpenseHomePageState extends State<ExpenseHomePage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addSampleExpense,
+        onPressed: _showAddExpenseDialog,
         child: const Icon(Icons.add),
       ),
     );
