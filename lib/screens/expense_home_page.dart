@@ -160,29 +160,6 @@ class _ExpenseHomePageState extends State<ExpenseHomePage> {
           ),
         ],
       ),
-      
-      /* _expences.isEmpty
-      ? const Center(child: Text('No expenses yet'))
-      : ListView.builder(
-        itemCount: _expences.length,
-        itemBuilder: (context, index) {
-          final expense = _expences[index];
-          return ListTile(
-            title: Text(expense.title),
-            subtitle: Text(expense.category),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('\$${expense.amount.toStringAsFixed(2)}'),
-                IconButton(
-                  icon: const Icon(Icons.delete_outline),
-                  onPressed: () => _deleteExpense(expense.id!),
-                ),
-              ],
-            ),
-          );
-        },
-      ), */
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddExpenseDialog,
         child: const Icon(Icons.add),
