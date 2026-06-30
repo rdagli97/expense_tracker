@@ -1,3 +1,4 @@
+import 'package:expense_tracker/screens/expense_home_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,11 +17,7 @@ class ExpenseTrackerApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         useMaterial3: true,
       ),
-      home: const Scaffold(
-        body: Center(
-          child: Text('Expense Tracker - Coming Soon'),
-        ),
-      ),
+      home: ExpenseHomePage(),
     );
   }
 }
