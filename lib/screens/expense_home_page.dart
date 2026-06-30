@@ -106,11 +106,62 @@ class _ExpenseHomePageState extends State<ExpenseHomePage> {
     _loadExpenses();
   }
 
+  double get _totalAmount {
+    return _expences.fold(0, (sum, expense) => sum + expense.amount);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Expense Tracker')),
-      body: _expences.isEmpty
+      body: Column(
+        children: [
+          // total expenses card
+          Card(
+            margin: EdgeInsets.all(16),
+            color: Theme.of(context).colorScheme.primaryContainer,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  const Text('Total Spent', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  Text(
+                    '\$${_totalAmount.toStringAsFixed(2)}',
+                    style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: _expences.isEmpty
+            ? const Center(child: Text('No expenses yet'))
+            : ListView.builder(
+              itemCount: _expences.length,
+              itemBuilder: (context, index) {
+                final expense = _expences[index];
+                return ListTile(
+                  title: Text(expense.title),
+                  subtitle: Text(expense.category),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('\$${expense.amount.toStringAsFixed(2)}'),
+                      IconButton(
+                        icon: const Icon(Icons.delete_outline),
+                        onPressed: () => _deleteExpense(expense.id!),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+      
+      /* _expences.isEmpty
       ? const Center(child: Text('No expenses yet'))
       : ListView.builder(
         itemCount: _expences.length,
@@ -131,7 +182,7 @@ class _ExpenseHomePageState extends State<ExpenseHomePage> {
             ),
           );
         },
-      ),
+      ), */
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddExpenseDialog,
         child: const Icon(Icons.add),
